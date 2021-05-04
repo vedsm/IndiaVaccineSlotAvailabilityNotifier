@@ -29,4 +29,4 @@ Final Step) To close the app run: `pm2 stop vaccineNotifier.js && pm2 delete vac
 
 
 Here's a sample of the resultant emails:
-![image info](./sampleEmail.png)
+![image info](./exampleEmail.png)
