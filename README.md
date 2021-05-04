@@ -14,7 +14,7 @@ Add the password you got to .env file's "APPLICATION_PASSWORD" value
 \
 Step 2) Create a twilio account:
 https://www.twilio.com/console/voice/build/getting-started
-No need to add credit card details. A trail account also works within demo limits. Just use the twilio demo provided "from" call number and your whitelisted "to" phone number.
+No need to add credit card details. A trail account also works within demo limits. Just use the twilio demo provided "from" call number and your whitelisted "to" phone number (https://www.twilio.com/console/phone-numbers/verified).
 \
 \
 Step 3) Enter the details in the file .env, present in the same folder

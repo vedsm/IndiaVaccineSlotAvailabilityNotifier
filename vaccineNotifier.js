@@ -23,30 +23,39 @@ async function main(){
 }
 
 async function checkAvailability() {
-
-    let datesArray = await fetchNext10Days();
-    datesArray.forEach(date => {
-        PINCODES.forEach(pincode => {
-            getSlotsForDateAndPIN(date, pincode);
-        })
+    let today = moment();
+    PINCODES.forEach(pincode => {
+        getSlotsForDateAndPIN(today.format('DD-MM-YYYY'), pincode);
     })
 }
 
 function getSlotsForDateAndPIN(date, pincode) {
+    //OG url: 'https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/findByPin?pincode=' + pincode + '&date=' + date,
+    //NEW GET https://cdn-api.co-vin.in/api/v2/appointment/sessions/calendarByPin?pincode=401501&date=04-05-2021
+
     let config = {
         method: 'get',
-        url: 'https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/findByPin?pincode=' + pincode + '&date=' + date,
-        headers: {
-            'accept': 'application/json',
-            'Accept-Language': 'hi_IN'
-        }
+        url: 'https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/calendarByPin?pincode=' + pincode + '&date=' + date,
+        // headers: {
+        //     'accept': 'application/json',
+        //     'Accept-Language': 'hi_IN'
+        // }
     };
 
     axios(config)
         .then(function (slots) {
-            let sessions = slots.data.sessions;
+            let centers = slots.data.centers
+            // console.log("centers->", centers)
+            let sessions = []
+            centers.forEach(function(center){
+                // console.log("center->", center)
+                sessions = sessions.concat(center.sessions)
+            });
+            // console.log("sessions->", sessions)
+            // let sessions = slots.data.sessions;
             let validSlots = sessions.filter(slot => slot.min_age_limit <= AGE &&  slot.available_capacity > 0)
-            console.log({date, pincode, validSlots: validSlots.length})
+            momenttime = moment()
+            console.log({now: momenttime.format("YYYY-MM-DD hh:mm:ss "),date, pincode, centers: centers.length, sessions: sessions.length, validSlots: validSlots.length})
             if(validSlots.length > 0) {
                 notifyMe(validSlots);
             }
@@ -71,7 +80,7 @@ notifyMe(validSlots){
 
     caller.sendCall("Vaccine slot is available. Go to cowin.gov.in to book your slot.", (err, result) => {
         if(err) {
-            console.error("error in sendign call trigger", err);
+            console.error("error in sending call trigger", err);
         }
         else{
             console.log("call trigger success", result);
