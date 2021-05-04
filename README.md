@@ -17,10 +17,13 @@ Check if emails are proper by sending dummy notification) On your terminal run: 
 (PS: If email is not being shown in your primary inbox or no notification: Go to Promotions inbox and move email it to primary inbox)
 \
 \
-Step 4) On your terminal run: `npm i && pm2 start vaccineNotifier.js` (if if are getting failed to install pm2, run `npm i -g pm2` first)
+Step 4) On your terminal run: `npm i && pm2 start vaccineNotifier.js` (if you are getting failed to install pm2, run `npm i -g pm2` first)
 \
 \
-Step Final) To close the app run: pm2 stop vaccineNotifier.js && pm2 delete vaccineNotifier.js
+Step 5) On your terminal run: `pm2 logs vaccineNotifier` to checkif your script is running properly
+\
+\
+Final Step) To close the app run: `pm2 stop vaccineNotifier.js && pm2 delete vaccineNotifier.js`
 \
 \
 
