@@ -25,8 +25,10 @@ Step 5) On your terminal run: `pm2 logs vaccineNotifier` to checkif your script 
 \
 Final Step) To close the app run: `pm2 stop vaccineNotifier.js && pm2 delete vaccineNotifier.js`
 \
-\
 
 
 Here's a sample of the resultant emails:
 ![image info](./exampleEmail.png)
+\
+\
+Inspired from this repo -> https://github.com/kartikey54/VaccineAvailabilityNotifier 
