@@ -3,16 +3,8 @@ const moment = require('moment');
 const cron = require('node-cron');
 const axios = require('axios');
 const notifier = require('./notifier');
-/**
-Step 1) Enable application access on your gmail with steps given here:
- https://support.google.com/accounts/answer/185833?p=InvalidSecondFactor&visit_id=637554658548216477-2576856839&rd=1
+const caller = require('./caller');
 
-Step 2) Enter the details in the file .env, present in the same folder
-
-Step 3) On your terminal run: npm i && pm2 start vaccineNotifier.js
-
-To close the app, run: pm2 stop vaccineNotifier.js && pm2 delete vaccineNotifier.js
- */
 
 const PINCODES = process.env.PINCODES.split(',')
 const SENDER_EMAIL = process.env.SENDER_EMAIL
@@ -71,6 +63,18 @@ notifyMe(validSlots){
     notifier.sendEmail(SENDER_EMAIL, RECEIVER_EMAILS, 'VACCINE BOOKING AVAILABLE', slotDetails, (err, result) => {
         if(err) {
             console.error({err});
+        }
+        else{
+            console.log("email trigger success", result);
+        }
+    })
+
+    caller.sendCall("Vaccine slot is available. Go to cowin.gov.in to book your slot.", (err, result) => {
+        if(err) {
+            console.error("error in sendign call trigger", err);
+        }
+        else{
+            console.log("call trigger success", result);
         }
     })
 };
