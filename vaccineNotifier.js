@@ -7,14 +7,18 @@ const caller = require('./caller');
 
 
 const PINCODES = process.env.PINCODES.split(',')
+const EMAIL_NOTIFICATION = process.env.EMAIL_NOTIFICATION
+const PHONE_CALL_NOTIFICATION = process.env.PHONE_CALL_NOTIFICATION
 const SENDER_EMAIL = process.env.SENDER_EMAIL
 const RECEIVER_EMAILS = process.env.RECEIVER_EMAILS
 const AGE = process.env.AGE
+const EVERY_30_MIN = process.env.EVERY_30_MIN
 
 async function main(){
     try {
         cron.schedule('* * * * *', async () => {
-             await checkAvailability();
+            await checkAvailability();
+            if(EVERY_30_MIN === "TRUE") setTimeout(checkAvailability, 30000);
         });
     } catch (e) {
         console.log('an error occured: ' + JSON.stringify(e, null, 2));
@@ -70,23 +74,27 @@ async function
 
 notifyMe(validSlots){
     let slotDetails = JSON.stringify(validSlots, null, '\t');
-    notifier.sendEmail(SENDER_EMAIL, RECEIVER_EMAILS, 'VACCINE BOOKING AVAILABLE', slotDetails, (err, result) => {
-        if(err) {
-            console.error({err});
-        }
-        else{
-            console.log("email trigger success", result);
-        }
-    })
+    if(EMAIL_NOTIFICATION === "TRUE"){
+        notifier.sendEmail(SENDER_EMAIL, RECEIVER_EMAILS, 'VACCINE BOOKING AVAILABLE', slotDetails, (err, result) => {
+            if(err) {
+                console.error({err});
+            }
+            else{
+                console.log("email trigger success", result);
+            }
+        })
+    }
 
-    caller.sendCall("Vaccine slot is available. Go to cowin.gov.in to book your slot.", (err, result) => {
-        if(err) {
-            console.error("error in sending call trigger", err);
-        }
-        else{
-            console.log("call trigger success", result);
-        }
-    })
+    if(PHONE_CALL_NOTIFICATION === "TRUE"){
+        caller.sendCall("Vaccine slot is available. Go to cowin.gov.in to book your slot.", (err, result) => {
+            if(err) {
+                console.error("error in sending call trigger", err);
+            }
+            else{
+                console.log("call trigger success", result);
+            }
+        })
+    }
 };
 
 async function fetchNext10Days(){
