@@ -24,7 +24,7 @@ testCalendarByPinMethod(){
 
     let config = {
         method: 'get',
-        url: 'https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/calendarByPin?pincode=401501&date=06-05-2021',
+        url: 'https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/calendarByPin?pincode=422003&date=06-05-2021',
         headers: {
             'accept': 'application/json',
             'Accept-Language': 'hi_IN',
@@ -42,7 +42,16 @@ testCalendarByPinMethod(){
             let sessions = []
             centers.forEach(function(center){ 
                 // console.log("center->", center)
-                sessions = sessions.concat(center.sessions)
+                // sessions = sessions.concat(center.sessions)
+                center_sessions_with_details = []
+                center.sessions.forEach(function(center_session){
+                    center_session.center_name = center.name
+                    center_session.center_address = center.address
+                    center_session.center_state_name = center.state_name
+                    center_session.center_pincode = center.pincode
+                    center_sessions_with_details = center_sessions_with_details.concat(center_session)
+                })
+                sessions = sessions.concat(center_sessions_with_details)
             });
             // console.log("sessions->", sessions)
             // let sessions = slots.data.sessions;
@@ -62,7 +71,7 @@ testFindByPinMethod(){
 
     let config = {
         method: 'get',
-        url: 'https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/findByPin?pincode=401501&date=06-05-2021',
+        url: 'https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/findByPin?pincode=422003&date=06-05-2021',
         headers: {
             'accept': 'application/json',
             'Accept-Language': 'hi_IN',
@@ -140,7 +149,15 @@ testParsingOfCalendarByPinMethod(){
     let sessions = []
     centers.forEach(function(center){
         console.log("center->", center)
-        sessions = sessions.concat(center.sessions)
+        center_sessions_with_details = []
+        center.sessions.forEach(function(center_session){
+            center_session.center_name = center.name
+            center_session.center_address = center.address
+            center_session.center_state_name = center.state_name
+            center_session.center_pincode = center.pincode
+            center_sessions_with_details = center_sessions_with_details.concat(center_session)
+        })
+        sessions = sessions.concat(center_sessions_with_details)
     });
     console.log("sessions->", sessions)
 

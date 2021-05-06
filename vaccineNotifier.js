@@ -54,7 +54,16 @@ function getSlotsForDateAndPIN(date, pincode) {
             let sessions = []
             centers.forEach(function(center){
                 // console.log("center->", center)
-                sessions = sessions.concat(center.sessions)
+                center_sessions_with_details = []
+                center.sessions.forEach(function(center_session){
+                    center_session.center_name = center.name
+                    center_session.center_address = center.address
+                    center_session.center_state_name = center.state_name
+                    center_session.center_pincode = center.pincode
+                    center_sessions_with_details = center_sessions_with_details.concat(center_session)
+                })
+                sessions = sessions.concat(center_sessions_with_details)
+                // sessions = sessions.concat(center.sessions)
             });
             // console.log("sessions->", sessions)
             // let sessions = slots.data.sessions;
@@ -62,7 +71,7 @@ function getSlotsForDateAndPIN(date, pincode) {
             momenttime = moment()
             console.log({now: momenttime.format("YYYY-MM-DD hh:mm:ss "),date, pincode, centers: centers.length, sessions: sessions.length, validSlots: validSlots.length})
             if(validSlots.length > 0) {
-                notifyMe(centers);
+                notifyMe(validSlots);
             }
         })
         .catch(function (error) {
