@@ -31,15 +31,16 @@ async function checkAvailability() {
 
 function getSlotsForDateAndPIN(date, pincode) {
     //OG url: 'https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/findByPin?pincode=' + pincode + '&date=' + date,
-    //NEW GET https://cdn-api.co-vin.in/api/v2/appointment/sessions/calendarByPin?pincode=401501&date=04-05-2021
+    //NEW GET https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/calendarByPin?pincode=401501&date=04-05-2021
 
     let config = {
         method: 'get',
         url: 'https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/calendarByPin?pincode=' + pincode + '&date=' + date,
-        // headers: {
-        //     'accept': 'application/json',
-        //     'Accept-Language': 'hi_IN'
-        // }
+        headers: {
+            'accept': 'application/json',
+            'Accept-Language': 'hi_IN',
+            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'
+        }
     };
 
     axios(config)
@@ -57,7 +58,7 @@ function getSlotsForDateAndPIN(date, pincode) {
             momenttime = moment()
             console.log({now: momenttime.format("YYYY-MM-DD hh:mm:ss "),date, pincode, centers: centers.length, sessions: sessions.length, validSlots: validSlots.length})
             if(validSlots.length > 0) {
-                notifyMe(validSlots);
+                notifyMe(centers);
             }
         })
         .catch(function (error) {
