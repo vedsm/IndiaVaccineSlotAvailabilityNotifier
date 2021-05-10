@@ -37,9 +37,10 @@ function getSlotsForDateAndPIN(date, pincode) {
     //OG url: 'https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/findByPin?pincode=' + pincode + '&date=' + date,
     //NEW GET https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/calendarByPin?pincode=401501&date=04-05-2021
 
+    // url: 'https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/calendarByPin?pincode=' + pincode + '&date=' + date,
     let config = {
         method: 'get',
-        url: 'https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/calendarByPin?pincode=' + pincode + '&date=' + date,
+        url: 'https://cdn-api.co-vin.in/api/v2/appointment/sessions/calendarByPin?pincode=' + pincode + '&date=' + date,
         headers: {
             'accept': 'application/json',
             'Accept-Language': 'hi_IN',
@@ -75,7 +76,8 @@ function getSlotsForDateAndPIN(date, pincode) {
             }
         })
         .catch(function (error) {
-            console.log(error);
+            console.log("error in doing the api call to cowin");
+            // console.log("error in doing the api call to cowin", error);
         });
 }
 
@@ -89,7 +91,8 @@ notifyMe(validSlots){
                 console.error({err});
             }
             else{
-                console.log("email trigger success", result);
+                console.log("email trigger success");
+                // console.log("email trigger success result->", result);
             }
         })
     }
@@ -100,7 +103,8 @@ notifyMe(validSlots){
                 console.error("error in sending call trigger", err);
             }
             else{
-                console.log("call trigger success", result);
+                console.log("call trigger success");
+                // console.log("call trigger success result->", result);
             }
         })
     }

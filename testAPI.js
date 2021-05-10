@@ -8,7 +8,7 @@ const AGE = process.env.AGE
 
 async function main(){
     try {
-        testFindByPinMethod()
+        // testFindByPinMethod()
         testCalendarByPinMethod()
 
         // testParsingOfCalendarByPinMethod()
@@ -21,10 +21,11 @@ async function main(){
 async function
 testCalendarByPinMethod(){
     console.log("Sending testCalendarByPinMethod")
+    // url: 'https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/calendarByPin?pincode=422003&date=10-05-2021',
 
     let config = {
         method: 'get',
-        url: 'https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/calendarByPin?pincode=422003&date=06-05-2021',
+        url: 'https://cdn-api.co-vin.in/api/v2/appointment/sessions/calendarByPin?pincode=422003&date=10-05-2021',
         headers: {
             'accept': 'application/json',
             'Accept-Language': 'hi_IN',
@@ -71,7 +72,7 @@ testFindByPinMethod(){
 
     let config = {
         method: 'get',
-        url: 'https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/findByPin?pincode=422003&date=06-05-2021',
+        url: 'https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/findByPin?pincode=422003&date=10-05-2021',
         headers: {
             'accept': 'application/json',
             'Accept-Language': 'hi_IN',
@@ -126,7 +127,7 @@ testParsingOfCalendarByPinMethod(){
                         },
                         {
                             "session_id": "0d056282-077d-47b8-9073-31c7be410299",
-                            "date": "06-05-2021",
+                            "date": "10-05-2021",
                             "available_capacity": 0,
                             "min_age_limit": 45,
                             "vaccine": "COVAXIN",
