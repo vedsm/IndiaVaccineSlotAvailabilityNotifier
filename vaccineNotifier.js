@@ -12,7 +12,9 @@ const PHONE_CALL_NOTIFICATION = process.env.PHONE_CALL_NOTIFICATION
 const SENDER_EMAIL = process.env.SENDER_EMAIL
 const RECEIVER_EMAILS = process.env.RECEIVER_EMAILS
 const AGE = process.env.AGE
+const VACCINE = process.env.VACCINE
 const EVERY_30_MIN = process.env.EVERY_30_MIN
+const FETCH_ONLY_VERY_LATEST_SLOTS = process.env.FETCH_ONLY_VERY_LATEST_SLOTS
 
 async function main(){
     try {
@@ -37,14 +39,22 @@ function getSlotsForDateAndPIN(date, pincode) {
     //OG url: 'https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/findByPin?pincode=' + pincode + '&date=' + date,
     //NEW GET https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/calendarByPin?pincode=401501&date=04-05-2021
 
-    // url: 'https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/calendarByPin?pincode=' + pincode + '&date=' + date,
+    let url = 'https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/calendarByPin?pincode=' + pincode + '&date=' + date
+    if(FETCH_ONLY_VERY_LATEST_SLOTS === "TRUE"){
+        url = 'https://cdn-api.co-vin.in/api/v2/appointment/sessions/calendarByPin?pincode=' + pincode + '&date=' + date
+    }
+    if (VACCINE !== "ALL"){
+        url = url + '&vaccine=' + VACCINE
+    }
+
     let config = {
         method: 'get',
-        url: 'https://cdn-api.co-vin.in/api/v2/appointment/sessions/calendarByPin?pincode=' + pincode + '&date=' + date,
+        url: url,
         headers: {
             'accept': 'application/json',
             'Accept-Language': 'hi_IN',
-            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'
+            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36',
+            'Cache-Control': 'no-cache'
         }
     };
 
@@ -69,8 +79,11 @@ function getSlotsForDateAndPIN(date, pincode) {
             // console.log("sessions->", sessions)
             // let sessions = slots.data.sessions;
             let validSlots = sessions.filter(slot => slot.min_age_limit <= AGE &&  slot.available_capacity > 0)
+            if (VACCINE !== "ALL"){
+                validSlots = validSlots.filter(slot => slot.vaccine === VACCINE)
+            }
             momenttime = moment()
-            console.log({now: momenttime.format("YYYY-MM-DD hh:mm:ss "),date, pincode, centers: centers.length, sessions: sessions.length, validSlots: validSlots.length})
+            console.log({now: momenttime.format("YYYY-MM-DD hh:mm:ss "),date, pincode, centers: centers.length, sessions: sessions.length, validSlots: validSlots.length, url})
             if(validSlots.length > 0) {
                 notifyMe(validSlots);
             }
