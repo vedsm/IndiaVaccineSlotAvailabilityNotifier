@@ -13,14 +13,14 @@ const SENDER_EMAIL = process.env.SENDER_EMAIL
 const RECEIVER_EMAILS = process.env.RECEIVER_EMAILS
 const AGE = process.env.AGE
 const VACCINE = process.env.VACCINE
-const EVERY_30_MIN = process.env.EVERY_30_MIN
+const RUN_EVERY_30_SECOND = process.env.RUN_EVERY_30_SECOND
 const FETCH_ONLY_VERY_LATEST_SLOTS = process.env.FETCH_ONLY_VERY_LATEST_SLOTS
 
 async function main(){
     try {
         cron.schedule('* * * * *', async () => {
             await checkAvailability();
-            if(EVERY_30_MIN === "TRUE") setTimeout(checkAvailability, 30000);
+            if(RUN_EVERY_30_SECOND === "TRUE") setTimeout(checkAvailability, 30000);
         });
     } catch (e) {
         console.log('an error occured: ' + JSON.stringify(e, null, 2));
