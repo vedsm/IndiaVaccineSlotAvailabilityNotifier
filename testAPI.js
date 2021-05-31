@@ -3,11 +3,12 @@ const caller = require('./caller');
 const moment = require('moment');
 const axios = require('axios');
 
-const DATE = '10-05-2021'
+const DATE = '31-05-2021'
 const PINCODES = process.env.PINCODES.split(',')
 const AGE = process.env.AGE
 const VACCINE = process.env.VACCINE
 // #VACCINE=ALL #Can choose between ALL, COVAXIN or COVISHIELD
+const ONLY_SHOW_FREE_VACCINE = process.env.ONLY_SHOW_FREE_VACCINE
 const FETCH_ONLY_VERY_LATEST_SLOTS = process.env.FETCH_ONLY_VERY_LATEST_SLOTS
 
 
@@ -34,6 +35,10 @@ testCalendarByPinMethod(){
     if (VACCINE !== "ALL"){
         url = url + '&vaccine=' + VACCINE
     }
+    //TODO!
+    // if (ONLY_SHOW_FREE_VACCINE === "TRUE"){
+    //     url = url + '&vaccine=' + VACCINE
+    // }
     console.log("testCalendarByPinMethod url ->", url)
 
     let config = {
@@ -59,14 +64,19 @@ testCalendarByPinMethod(){
                 // console.log("center->", center)
                 // sessions = sessions.concat(center.sessions)
                 center_sessions_with_details = []
-                center.sessions.forEach(function(center_session){
-                    center_session.center_name = center.name
-                    center_session.center_address = center.address
-                    center_session.center_state_name = center.state_name
-                    center_session.center_pincode = center.pincode
-                    center_sessions_with_details = center_sessions_with_details.concat(center_session)
-                })
-                sessions = sessions.concat(center_sessions_with_details)
+                if(ONLY_SHOW_FREE_VACCINE === "TRUE" && center.fee_type !== "Free"){
+                    console.log("The center is for paid vaccines and you have selected to show only Free vaccines. Hence ignoring it->", center.name)
+                }
+                else{
+                    center.sessions.forEach(function(center_session){
+                        center_session.center_name = center.name
+                        center_session.center_address = center.address
+                        center_session.center_state_name = center.state_name
+                        center_session.center_pincode = center.pincode
+                        center_sessions_with_details = center_sessions_with_details.concat(center_session)
+                    })
+                    sessions = sessions.concat(center_sessions_with_details)
+                }
             });
             // console.log("sessions->", sessions)
             // let sessions = slots.data.sessions;
@@ -181,14 +191,19 @@ testParsingOfCalendarByPinMethod(){
     centers.forEach(function(center){
         console.log("center->", center)
         center_sessions_with_details = []
-        center.sessions.forEach(function(center_session){
-            center_session.center_name = center.name
-            center_session.center_address = center.address
-            center_session.center_state_name = center.state_name
-            center_session.center_pincode = center.pincode
-            center_sessions_with_details = center_sessions_with_details.concat(center_session)
-        })
+        if(ONLY_SHOW_FREE_VACCINE === "TRUE" && center.fee_type !== "Free"){
+            console.log("The center is for paid vaccines and you have selected to show only Free vaccines", center.name)
+        }
+        else{
+            center.sessions.forEach(function(center_session){
+                center_session.center_name = center.name
+                center_session.center_address = center.address
+                center_session.center_state_name = center.state_name
+                center_session.center_pincode = center.pincode
+                center_sessions_with_details = center_sessions_with_details.concat(center_session)
+            })
         sessions = sessions.concat(center_sessions_with_details)
+        }
     });
     console.log("sessions->", sessions)
 

@@ -13,6 +13,7 @@ const SENDER_EMAIL = process.env.SENDER_EMAIL
 const RECEIVER_EMAILS = process.env.RECEIVER_EMAILS
 const AGE = process.env.AGE
 const VACCINE = process.env.VACCINE
+const ONLY_SHOW_FREE_VACCINE = process.env.ONLY_SHOW_FREE_VACCINE
 const RUN_EVERY_30_SECOND = process.env.RUN_EVERY_30_SECOND
 const FETCH_ONLY_VERY_LATEST_SLOTS = process.env.FETCH_ONLY_VERY_LATEST_SLOTS
 
@@ -46,6 +47,10 @@ function getSlotsForDateAndPIN(date, pincode) {
     if (VACCINE !== "ALL"){
         url = url + '&vaccine=' + VACCINE
     }
+    //TODO!
+    // if (ONLY_SHOW_FREE_VACCINE !== "TRUE"){
+    //     url = url + '&vaccine=' + VACCINE
+    // }
 
     let config = {
         method: 'get',
@@ -66,15 +71,20 @@ function getSlotsForDateAndPIN(date, pincode) {
             centers.forEach(function(center){
                 // console.log("center->", center)
                 center_sessions_with_details = []
-                center.sessions.forEach(function(center_session){
-                    center_session.center_name = center.name
-                    center_session.center_address = center.address
-                    center_session.center_state_name = center.state_name
-                    center_session.center_pincode = center.pincode
-                    center_sessions_with_details = center_sessions_with_details.concat(center_session)
-                })
-                sessions = sessions.concat(center_sessions_with_details)
-                // sessions = sessions.concat(center.sessions)
+                if(ONLY_SHOW_FREE_VACCINE === "TRUE" && center.fee_type !== "Free"){
+                    console.log("The center is for paid vaccines and you have selected to show only Free vaccines. Hence ignoring it->", center.name)
+                }
+                else{
+                    center.sessions.forEach(function(center_session){
+                        center_session.center_name = center.name
+                        center_session.center_address = center.address
+                        center_session.center_state_name = center.state_name
+                        center_session.center_pincode = center.pincode
+                        center_sessions_with_details = center_sessions_with_details.concat(center_session)
+                    })
+                    sessions = sessions.concat(center_sessions_with_details)
+                    // sessions = sessions.concat(center.sessions)
+                }
             });
             // console.log("sessions->", sessions)
             // let sessions = slots.data.sessions;
@@ -89,7 +99,8 @@ function getSlotsForDateAndPIN(date, pincode) {
             }
         })
         .catch(function (error) {
-            console.log("error in doing the api call to cowin");
+            momenttime = moment()
+            console.log("error in doing the api call to cowin ", momenttime.format("hh:mm:ss"), pincode, date);
             // console.log("error in doing the api call to cowin", error);
         });
 }
