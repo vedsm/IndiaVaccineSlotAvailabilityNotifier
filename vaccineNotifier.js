@@ -14,6 +14,7 @@ const RECEIVER_EMAILS = process.env.RECEIVER_EMAILS
 const AGE = process.env.AGE
 const VACCINE = process.env.VACCINE
 const ONLY_SHOW_FREE_VACCINE = process.env.ONLY_SHOW_FREE_VACCINE
+const SHOW_FOR_DOSE = process.env.SHOW_FOR_DOSE
 const RUN_EVERY_30_SECOND = process.env.RUN_EVERY_30_SECOND
 const FETCH_ONLY_VERY_LATEST_SLOTS = process.env.FETCH_ONLY_VERY_LATEST_SLOTS
 
@@ -89,6 +90,12 @@ function getSlotsForDateAndPIN(date, pincode) {
             // console.log("sessions->", sessions)
             // let sessions = slots.data.sessions;
             let validSlots = sessions.filter(slot => slot.min_age_limit <= AGE &&  slot.available_capacity > 0)
+            if(SHOW_FOR_DOSE === "1"){
+                validSlots = validSlots.filter(slot => slot.available_capacity_dose1 > 0)
+            }
+            else if(SHOW_FOR_DOSE === "2"){
+                validSlots = validSlots.filter(slot => slot.available_capacity_dose2 > 0)
+            }
             if (VACCINE !== "ALL"){
                 validSlots = validSlots.filter(slot => slot.vaccine === VACCINE)
             }
